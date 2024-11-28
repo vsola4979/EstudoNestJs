@@ -1,21 +1,20 @@
-import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { UserEntity } from './entities/user.entity';
+import * as entities from './entities';
 
-config();
+const ENV = process.env.NODE_ENV || 'development';
 
-const configService = new ConfigService();
+config({ path: `src/config/env/${ENV}.env` });
 
 const dataSourceOptions: DataSourceOptions = {
     type: 'postgres',
-    host: configService.get<string>('DB_HOST'),
-    port: +configService.get<number>('DB_PORT'),
-    username: configService.get<string>('DB_USERNAME'),
-    password: configService.get<string>('DB_PASSWORD'),
-    database: configService.get<string>('DB_NAME'),
-    // entities: [TaskEntity, UserEntity],
-    migrations: [__dirname + '/migrations/*.ts'],
+    host: process.env.DB_HOST,
+    port: +process.env.DB_PORT,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    entities,
+    migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
 };
 
 export default new DataSource(dataSourceOptions);

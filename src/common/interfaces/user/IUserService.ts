@@ -1,5 +1,6 @@
+import { CreateUserDto } from "src/modules/user/dtos/createUserDto";
+
 export interface IUserService {
-    findUserById(
-        id: string
-    ): Promise<any>;
+    findUserById(id: string): Promise<any>;
+    createUser(createUserDto: CreateUserDto): CreateUserDto;
 }
