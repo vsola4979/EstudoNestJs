@@ -1,15 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { UserDto } from './dtos/userDto';
+import { IUserService } from 'src/common/interfaces/user/IUserService';
 
 @Injectable()
-export class UserService {
+export class UserService implements IUserService {
 
-    findUser(): UserDto {
-        return {
-            id: '1',
-            username: 'john',
-            password: 'password',
-        };
+    findUserById(id: string): Promise<any> {
+        throw new Error('Method not implemented.');
     }
-
 }
