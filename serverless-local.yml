@@ -1,0 +1,57 @@
+service: marketplace
+frameworkVersion: '4.4.13'
+useDotenv: true
+plugins:
+  # - serverless-esbuild
+  - serverless-offline
+  - serverless-offline-aws-eventbridge
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'local'}
+  region: ${opt:region, 'us-east-1'}
+  environment: 
+    ${file(./config/env/${self:provider.stage}.yml)}
+package:
+  individually: true
+  patterns:
+    - '!node_modules/**'
+    - '!.git/**'
+    - '!.serverless/**'
+    - '!yarn.lock'
+    - '!package-lock.json'
+  excludeDevDependencies: true
+custom:
+  prefix: ${self:provider.stage}-${self:service}
+  serverless-offline:
+    allowCache: true # Important: This will prevent serverless-offline from eating all of your memory
+  esbuild:
+    plugins: "plugins.js"
+    bundle: true
+    minify: false
+    target: 'node20'
+    sourcemap: linked
+    skipRebuild: true
+    concurrency: 1
+    keepNames: true
+    exclude: []
+    external:
+      - "@nestjs/microservices"
+      - "@nestjs/websockets/socket-module"
+      - "class-transformer/storage"
+      - "@css-inline/css-inline-linux-x64-gnu"
+      - "@css-inline/css-inline-linux-x64-musl"
+functions:
+  main:
+    handler: config/lambda/lambda.handler
+    # package:
+    #   patterns:
+        # - 'src/lambda/swagger-ui.css'
+        # - 'src/lambda/swagger-ui-standalone-preset.js'
+        # - 'src/lambda/swagger-ui-bundle.js'
+        # - 'src/modules/shared/pdf/templates'
+        # - '!src/consumers/**'
+    events:
+      - http:
+          method: any
+          path: /{any+}  

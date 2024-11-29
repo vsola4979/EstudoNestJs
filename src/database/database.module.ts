@@ -6,7 +6,7 @@ import * as entities from './entities';
 
 const ENV = process.env.NODE_ENV || 'development';
 
-config({ path: `src/config/env/${ENV}.env` });
+config({ path: `config/env/${ENV}.env` });
 
 @Module({
     imports: [

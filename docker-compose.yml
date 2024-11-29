@@ -9,4 +9,18 @@ services:
     environment:
       POSTGRES_DB: task-management-api
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 12345678
+      POSTGRES_PASSWORD: 12345678      
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566" # Porta principal do LocalStack
+      - "4571:4571" # Outras portas (opcional)
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - SERVICES=s3,lambda,dynamodb,sqs # Liste aqui os serviços que deseja habilitar
+      - DEBUG=1 # Ativar debug para logs detalhados
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./localstack-data:/var/lib/localstack" # Persistência de dados
